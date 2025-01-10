@@ -1,0 +1,39 @@
+/* Navbar container */
+.dropdown-navbar {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 20px;
+    background: linear-gradient(90deg, rgba(227, 210, 111, 0.01), rgba(170, 150, 34, 0.1));
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Logo styling */
+.navbar-logo .logo {
+    width: 80px;
+    height: 40px;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+/* Navbar item styling */
+.navbar-item {
+    margin: 0;
+    padding: 5px 25px;
+}
+.navbar-links {
+    display: flex;
+    gap: 1em;
+    margin-left: auto;
+}
+.navbar-link {
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    font-weight: 300;
+    transition: color 0.3s;
+}
+
+.navbar-link:hover {
+    color: rgba(255, 255, 255, 0.8);
+}

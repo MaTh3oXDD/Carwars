@@ -1,0 +1,47 @@
+
+services:
+#  app:
+#    container_name: backend
+#    build:
+#      context: ./app
+#      dockerfile: Dockerfile
+#    ports:
+#      - 8080:8080
+#      - 35729:35729
+#      - 5005:5005
+#    depends_on:S
+#      - db
+#    volumes:
+#      - ./app/src:/app/src
+#      - ./app/target:/app/target
+#    restart: unless-stopped
+
+
+  db:
+    container_name: db-1
+    image: postgres
+    ports:
+      - "5433:5432"  # Fix the port mapping here to map container port 5432 to host port 5433
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: blog
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Persist the database data
+
+  api:
+    container_name: frontend
+    build:
+      context: ./api
+    volumes:
+      - ./api:/app
+      - /app/node_modules  # Mount node_modules directory to avoid conflicts
+    ports:
+      - "3000:3000"
+    working_dir: /app
+    command: npm start  # Or npm run dev
+    restart: always
+
+volumes:
+  postgres_data:  # Define a named volume for persisting PostgreSQL data
+    driver: local
