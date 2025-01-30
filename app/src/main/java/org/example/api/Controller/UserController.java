@@ -1,5 +1,6 @@
 package org.example.api.Controller;
 
+import org.example.api.DTO.CreateUserRequest;
 import org.example.api.Model.User;
 import org.example.api.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,19 +58,6 @@ public class UserController {
         return userService.findGenderByUsername(username);
     }
 
-    @GetMapping("/find/{id}")
-    public ResponseEntity<?> findUserWithCars(@PathVariable int id) {
-        User user = userService.findUserById(id);
-        if (user != null) {
-            List<String> carNames = user.getOwnerships().stream()
-                    .map(ownership -> ownership.getCar().getName())
-                    .collect(Collectors.toList());
-            return ResponseEntity.ok(new UserWithCarsResponse(user.getUsername(), carNames));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
     @GetMapping("/get-selected-car")
     public ResponseEntity<?> getSelectedCarIdByUsername(@RequestParam String username) {
         Integer selectedCarId = userService.findSelectedCarIdByUsername(username);
@@ -79,23 +67,10 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
     }
-
-    private static class UserWithCarsResponse {
-        private String username;
-        private List<String> carNames;
-
-        public UserWithCarsResponse(String username, List<String> carNames) {
-            this.username = username;
-            this.carNames = carNames;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        public List<String> getCarNames() {
-            return carNames;
-        }
+    @PostMapping("/createuser")
+    public ResponseEntity<User> createUser(@RequestBody CreateUserRequest request) {
+        User createdUser = userService.createUser(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
 }

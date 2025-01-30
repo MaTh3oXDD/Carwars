@@ -32,7 +32,7 @@ const Login = () => {
                     console.log('Zapisywanie do localStorage:', username); // Debugowanie
                     localStorage.setItem('username', username);
                 }
-                navigate('/characterMenu');
+                navigate('/main');
             } else {
                 const error = await response.text();
                 alert(`Błąd logowania: ${error}`);

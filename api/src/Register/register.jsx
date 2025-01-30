@@ -12,7 +12,7 @@ const Register = () => {
     const navigate = useNavigate();
 
     const goToLogin = () => {
-        navigate('/login');
+        navigate('/');
     };
 
     const handleSubmit = async (event) => {
@@ -24,21 +24,25 @@ const Register = () => {
             return;
         }
 
-        // Tworzenie obiektu użytkownika
-        const user = {
+        // Tworzenie obiektu użytkownika do wysłania
+        const userRequest = {
             email: email.trim(),
             username: username.trim(),
             password: password.trim(),
             gender: gender,
+            selectedCarId: 1, // Przykład, możesz ustawić domyślną wartość lub pobrać ją z formularza
+            bag: {
+                capacity: 600
+            }
         };
 
         try {
-            const response = await fetch('http://localhost:8080/user/add', {
+            const response = await fetch('http://localhost:8080/user/createuser', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(user), // Wysyłanie danych użytkownika
+                body: JSON.stringify(userRequest),
             });
 
             if (response.ok) {
@@ -110,18 +114,18 @@ const Register = () => {
                                 htmlFor="male">Mężczyzna
                             </label>
 
-                            <input className="inputRadio"  type="radio" id="male" name="gender" value="true" checked={gender === 'true'} onChange={(e) => setGender(true)}/>
+                            <input className="inputRadio"  type="radio" id="male" name="gender" value={true} checked={gender === true} onChange={() => setGender(true)}/>
                         </div>
                         <div>
                             <label
                                 htmlFor="female">Kobieta
                             </label>
-                            <input  className="inputRadio" type="radio" id="female" name="gender" value="false" checked={gender === 'false'} onChange={(e) => setGender(false)}/>
+                            <input  className="inputRadio" type="radio" id="female" name="gender" value={false} checked={gender === false} onChange={() => setGender(false)}/>
 
                         </div>
                     </div>
                     <div className="button-div">
-                    <button type="button" className="button" onClick={goToLogin}>Logowanie</button>
+                        <button type="button" className="button" onClick={goToLogin}>Logowanie</button>
                         <button type="submit" className="button">Zarejestruj</button>
                     </div>
                 </form>

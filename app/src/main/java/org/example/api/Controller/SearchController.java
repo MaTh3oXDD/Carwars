@@ -29,4 +29,15 @@ public class SearchController {
             return ResponseEntity.notFound().build();
         }
     }
+    @GetMapping("/findall")
+    public ResponseEntity<?> findAll() {
+        return ResponseEntity.ok(searchService.findall());
+    }
+    @GetMapping("/delete/{id}")
+    public ResponseEntity<?> deleteSearch(@PathVariable int id) {
+        if(ResponseEntity.ok(searchService.deleteSearch(id)).hasBody())
+            return ResponseEntity.ok("Search deleted");
+        else
+            return ResponseEntity.notFound().build();
+    }
 }

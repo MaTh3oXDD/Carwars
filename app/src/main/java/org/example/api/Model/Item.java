@@ -16,11 +16,10 @@ public class Item {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     private List<BagItem> bagItems;
 
-    public Item(int id, String name, int weight, List<BagItem> bagItems) {
+    public Item(int id, String name, int weight) {
         this.id = id;
         this.name = name;
         this.weight = weight;
-        this.bagItems = bagItems;
     }
 
     public Item() {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './characterMenu.css';
-import maleAvatar from '../../assets/img/mechanics/true.png';
-import femaleAvatar from '../../assets/img/mechanics/false.png';
+import maleAvatar from '../assets/img/mechanics/true.png';
+import femaleAvatar from '../assets/img/mechanics/false.png';
 
 const CharacterMenu = () => {
     const [username, setUsername] = useState('');

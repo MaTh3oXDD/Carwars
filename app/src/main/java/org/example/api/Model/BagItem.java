@@ -3,7 +3,7 @@ package org.example.api.Model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Bag_Item")
+@Table(name = "BagItems")
 public class BagItem {
 
     @Id
@@ -19,5 +19,29 @@ public class BagItem {
     private Item item;
 
     // Getters and setters
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Bag getBag() {
+        return bag;
+    }
+
+    public void setBag(Bag bag) {
+        this.bag = bag;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+    }
 }
 

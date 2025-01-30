@@ -25,6 +25,14 @@ public class SearchService {
     @Autowired
     private SearchRepository searchRepository;
 
+    public List<Search> findall() {
+        return searchRepository.findAll();
+    }
+    public Search deleteSearch(int id) {
+        Search search = searchRepository.findById(id).orElseThrow();
+        searchRepository.delete(search);
+        return search;
+    }
     public Search addSearch(Search search) {
         return searchRepository.save(search);
     }
@@ -71,4 +79,5 @@ public class SearchService {
 
         throw new IllegalArgumentException("Error in random selection. Possibly weights don't sum up to 100%");
     }
+
 }

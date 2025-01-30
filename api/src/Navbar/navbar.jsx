@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './navbar.css';
-import logo from '../../assets/carwarsbeztla.png';
+import logo from '../assets/carwarsbeztla.png';
 
 const Dropdown = () => {
 
