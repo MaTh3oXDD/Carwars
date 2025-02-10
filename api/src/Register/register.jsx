@@ -1,135 +1,146 @@
-import './register.css';
 import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardDescription,
+    CardContent,
+    CardFooter,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useTheme } from "@/context/ThemeProvider"; // Import hook useTheme
 
 const Register = () => {
-    const [email, setEmail] = useState('');
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [passwordRepeat, setPasswordRepeat] = useState('');
+    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [passwordRepeat, setPasswordRepeat] = useState("");
     const [gender, setGender] = useState(null);
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
 
     const navigate = useNavigate();
+    const { theme, toggleTheme } = useTheme(); // Używamy hooka useTheme
 
     const goToLogin = () => {
-        navigate('/');
+        navigate("/");
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setError("");
 
-        // Walidacja hasła
         if (password !== passwordRepeat) {
-            alert("Hasła muszą być takie same!");
+            setError("Hasła muszą być takie same!");
             return;
         }
 
-        // Tworzenie obiektu użytkownika do wysłania
         const userRequest = {
             email: email.trim(),
             username: username.trim(),
             password: password.trim(),
             gender: gender,
-            selectedCarId: 1, // Przykład, możesz ustawić domyślną wartość lub pobrać ją z formularza
-            bag: {
-                capacity: 600
-            }
+            selectedCarId: 1,
+            bag: { capacity: 600 },
         };
 
         try {
-            const response = await fetch('http://localhost:8080/user/createuser', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+            const response = await fetch("http://localhost:8080/user/createuser", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(userRequest),
             });
 
             if (response.ok) {
-                alert('Rejestracja zakończona sukcesem!');
-                navigate('/login'); // Przekierowanie na stronę logowania
+                setSuccess("Rejestracja zakończona sukcesem!");
+                navigate("/login");
             } else {
                 const error = await response.text();
-                alert(`Błąd: ${error}`);
+                setError(`Błąd: ${error}`);
             }
         } catch (err) {
             console.error(err);
-            alert('Wystąpił błąd podczas rejestracji.');
+            setError("Wystąpił błąd podczas rejestracji.");
         }
     };
 
     return (
-        <div className="register-container">
-            <div className="register-form-div">
-                <h2>Rejestracja</h2>
-                <form onSubmit={handleSubmit} className="register-form">
-                    <div className="form-group">
-                        <label htmlFor="email">Email:</label>
-                        <input
-                            type="email"
-                            id="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            placeholder="Wpisz swój e-mail"
-                        />
+        <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900">
+            <Card className="w-full max-w-md shadow-lg border rounded-md bg-white dark:bg-gray-800 dark:text-white">
+                <CardHeader>
+                    <div className="flex justify-between items-center">
+                        <CardTitle>Rejestracja</CardTitle>
+                        <Button size="sm" variant="outline" onClick={toggleTheme}>
+                            {theme === "dark" ? "☀️ Jasny Motyw" : "🌙 Ciemny Motyw"}
+                        </Button>
                     </div>
-                    <div className="form-group">
-                        <label htmlFor="username">Nazwa użytkownika:</label>
-                        <input
-                            type="text"
-                            id="username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            required
-                            placeholder="Wpisz swoją nazwę użytkownika"
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="password">Hasło:</label>
-                        <input
-                            type="password"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            placeholder="Wpisz swoje hasło"
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="passwordRepeat">Powtórz hasło:</label>
-                        <input
-                            type="password"
-                            id="passwordRepeat"
-                            value={passwordRepeat}
-                            onChange={(e) => setPasswordRepeat(e.target.value)}
-                            required
-                            placeholder="Wpisz ponownie swoje hasło"
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="gender">Wybierz płeć:</label>
-                        <div>
-                            <label
-                                htmlFor="male">Mężczyzna
-                            </label>
-
-                            <input className="inputRadio"  type="radio" id="male" name="gender" value={true} checked={gender === true} onChange={() => setGender(true)}/>
+                    <CardDescription>Wypełnij poniższe pola, aby założyć konto</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    {error && (
+                        <Alert variant="destructive">
+                            <AlertTitle>Błąd</AlertTitle>
+                            <AlertDescription>{error}</AlertDescription>
+                        </Alert>
+                    )}
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div className="space-y-1">
+                            <Label htmlFor="email">Email:</Label>
+                            <Input
+                                type="email"
+                                id="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="Wpisz swój e-mail"
+                                required
+                            />
                         </div>
-                        <div>
-                            <label
-                                htmlFor="female">Kobieta
-                            </label>
-                            <input  className="inputRadio" type="radio" id="female" name="gender" value={false} checked={gender === false} onChange={() => setGender(false)}/>
-
+                        <div className="space-y-1">
+                            <Label htmlFor="username">Nazwa użytkownika:</Label>
+                            <Input
+                                type="text"
+                                id="username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                placeholder="Wpisz swoją nazwę użytkownika"
+                                required
+                            />
                         </div>
-                    </div>
-                    <div className="button-div">
-                        <button type="button" className="button" onClick={goToLogin}>Logowanie</button>
-                        <button type="submit" className="button">Zarejestruj</button>
-                    </div>
-                </form>
-            </div>
+                        <div className="space-y-1">
+                            <Label htmlFor="password">Hasło:</Label>
+                            <Input
+                                type="password"
+                                id="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Wpisz swoje hasło"
+                                required
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <Label htmlFor="passwordRepeat">Powtórz hasło:</Label>
+                            <Input
+                                type="password"
+                                id="passwordRepeat"
+                                value={passwordRepeat}
+                                onChange={(e) => setPasswordRepeat(e.target.value)}
+                                placeholder="Wpisz ponownie swoje hasło"
+                                required
+                            />
+                        </div>
+                        <CardFooter className="flex justify-between">
+                            <Button type="button" variant="outline" onClick={goToLogin}>
+                                Logowanie
+                            </Button>
+                            <Button type="submit">Zarejestruj</Button>
+                        </CardFooter>
+                    </form>
+                </CardContent>
+            </Card>
         </div>
     );
 };

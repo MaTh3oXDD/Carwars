@@ -3,6 +3,7 @@ module.exports = {
     darkMode: ["class"],
     content: [
     "./index.html",
+	"./node_modules/@shadcn-ui/components/**/*.{js,ts,jsx,tsx}",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
@@ -58,5 +59,6 @@ module.exports = {
   },
   plugins: [// jeśli używasz formularzy Tailwind
     require("tailwindcss-animate"), // jeśli używasz ShadCN
+	require("tailwindcss-radix"),
   ],
 };

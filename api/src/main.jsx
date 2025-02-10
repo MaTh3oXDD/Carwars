@@ -10,23 +10,29 @@ import Search from "./Main/Search/search.jsx";
 import MainLayout from "./Main/main.jsx";
 import Market from "./Shop/market/market.jsx";
 import Shop from "./Shop/shop.jsx";
+import { ThemeProvider } from "./context/ThemeProvider";
 
 const App = () => {
     const [nickname, setNickname] = useState('');
 
     return (
-        <Router>
-            <Routes>
-                <Route path="/" element={<Login setNickname={setNickname} />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/navbar" element={<Navbar nickname={nickname} />} />
-                <Route path="/characterMenu" element={<CharacterMenu nickname={nickname} />} />
-                <Route path="/search" element={<Search/>} />
-                <Route path="/main" element={<MainLayout/>} />
-                <Route path="/market" element={<Market/>} />
-                <Route path="/shop" element={<Shop/>} />
-            </Routes>
-        </Router>
+        <StrictMode>
+            <ThemeProvider>
+                <Router>
+                    <Routes>
+                        <Route path="/" element={<Login setNickname={setNickname} />} />
+                        <Route path="/register" element={<Register />} />
+                        <Route path="/navbar" element={<Navbar nickname={nickname} />} />
+                        <Route path="/characterMenu" element={<CharacterMenu nickname={nickname} />} />
+                        <Route path="/search" element={<Search/>} />
+                        <Route path="/main" element={<MainLayout/>} />
+                        <Route path="/market" element={<Market/>} />
+                        <Route path="/shop" element={<Shop/>} />
+                    </Routes>
+                </Router>
+            </ThemeProvider>
+        </StrictMode>
+
     );
 };
 

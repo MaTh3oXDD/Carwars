@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
     Card,
     CardHeader,
@@ -12,13 +12,17 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useTheme } from "@/context/ThemeProvider"; // Importuj hook motywu
+import "./login.css";
 
 const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
-    const [error, setError] = useState('');
+    const [error, setError] = useState("");
     const navigate = useNavigate();
+
+    const { theme, toggleTheme } = useTheme(); // Uzyskaj obecny motyw z hooka
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -29,41 +33,52 @@ const Login = () => {
         };
 
         try {
-            const response = await fetch('http://localhost:8080/user/login', {
-                method: 'POST',
+            const response = await fetch("http://localhost:8080/user/login", {
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify(credentials),
             });
 
             if (response.ok) {
-                const usernameResponse = await fetch(`http://localhost:8080/get-username?email=${email}`);
+                const usernameResponse = await fetch(
+                    `http://localhost:8080/get-username?email=${email}`
+                );
+
                 if (usernameResponse.ok) {
                     const username = await usernameResponse.text();
-                    localStorage.setItem('username', username);
+                    localStorage.setItem("username", username); // Zapisywanie loginu do localStorage
                 }
-                navigate('/characterMenu');
+
+                navigate("/characterMenu"); // Przejdź po zalogowaniu
             } else {
                 const errorText = await response.text();
                 setError(`Błąd logowania: ${errorText}`);
             }
         } catch (err) {
             console.error(err);
-            setError('Wystąpił błąd podczas logowania.');
+            setError("Wystąpił błąd podczas logowania.");
         }
     };
 
     const goToRegister = () => {
-        navigate('/register');
+        navigate("/register"); // Przejście do rejestracji
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100">
-            <Card className="w-full max-w-md">
+        <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900">
+            <Card className="w-full max-w-md shadow-lg border rounded-md bg-white dark:bg-gray-800 dark:text-white">
                 <CardHeader>
-                    <CardTitle>Logowanie</CardTitle>
-                    <CardDescription>Proszę wprowadzić swoje dane</CardDescription>
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <CardTitle>Logowanie</CardTitle>
+                            <CardDescription>Proszę wprowadzić swoje dane</CardDescription>
+                        </div>
+                        <Button size="sm" variant="outline" onClick={toggleTheme}>
+                            {theme === "dark" ? "☀️ Jasny Motyw" : "🌙 Ciemny Motyw"}
+                        </Button>
+                    </div>
                 </CardHeader>
 
                 <CardContent>
@@ -75,7 +90,7 @@ const Login = () => {
                     )}
                     <form onSubmit={handleSubmit}>
                         <div className="space-y-4">
-                            <div>
+                            <div className="space-y-1">
                                 <Label htmlFor="email">Email</Label>
                                 <Input
                                     type="email"
@@ -86,11 +101,11 @@ const Login = () => {
                                     required
                                 />
                             </div>
-                            <div>
+                            <div className="space-y-1">
                                 <Label htmlFor="password">Hasło</Label>
                                 <div className="flex items-center space-x-2">
                                     <Input
-                                        type={showPassword ? 'text' : 'password'}
+                                        type={showPassword ? "text" : "password"}
                                         id="password"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
@@ -99,11 +114,11 @@ const Login = () => {
                                     />
                                     <Button
                                         type="button"
-                                        variant="secondary"
+                                        variant="outline"
                                         size="icon"
                                         onClick={() => setShowPassword(!showPassword)}
                                     >
-                                        {showPassword ? '🙈' : '👁️'}
+                                        {showPassword ? "🙈" : "👁️"}
                                     </Button>
                                 </div>
                             </div>
