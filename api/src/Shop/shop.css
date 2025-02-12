@@ -1,0 +1,14 @@
+.content-container{
+    display: flex;
+    flex-direction: row;
+}
+.shop-container{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    margin: 0 auto;
+    max-width: 1200px;
+}

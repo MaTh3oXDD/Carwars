@@ -26,14 +26,15 @@
     gap: 1em;
     margin-left: auto;
 }
+/* Linki w navbarze - domyślny styl */
 .navbar-link {
-    text-decoration: none;
-    color: white;
-    font-size: 18px;
-    font-weight: 300;
-    transition: color 0.3s;
+    color: #ffffff; /* Szary kolor domyślny dla tekstu */
+    text-decoration: none; /* Usuń podkreślenie */
+    transition: color 0.2s ease-in-out; /* Płynne przejście koloru */
 }
 
+/* Linki po najechaniu myszką */
 .navbar-link:hover {
-    color: rgba(255, 255, 255, 0.8);
+    color: rgb(227, 210, 111); /* Żółty kolor po najechaniu */
 }
+

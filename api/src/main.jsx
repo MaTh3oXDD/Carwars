@@ -10,8 +10,10 @@ import Search from "./Main/Search/search.jsx";
 import MainLayout from "./Main/main.jsx";
 import Market from "./Shop/market/market.jsx";
 import Shop from "./Shop/shop.jsx";
+import Contact from "./Contact/contact.jsx";
 import { ThemeProvider } from "./context/ThemeProvider";
-
+import Account from "@/Account/account.jsx";
+import Race from "@/Race/race.jsx";
 const App = () => {
     const [nickname, setNickname] = useState('');
 
@@ -28,6 +30,9 @@ const App = () => {
                         <Route path="/main" element={<MainLayout/>} />
                         <Route path="/market" element={<Market/>} />
                         <Route path="/shop" element={<Shop/>} />
+                        <Route path="/contact" element={<Contact/>} />
+                        <Route path="/account" element={<Account/>} />
+                        <Route path="/race" element={<Race/>} />
                     </Routes>
                 </Router>
             </ThemeProvider>

@@ -11,7 +11,7 @@
 }
 
 .content-container {
-   background-image:  linear-gradient(rgba(227, 210, 111, 0.5), rgba(170, 150, 34, 0.5)),
+   background-image:  linear-gradient(rgba(20,28,36, 0.9),rgba(8, 12, 15, 0.9)),
    url("src/assets/ferrari.png");
     height: 100vh;
     background-repeat: no-repeat;
@@ -29,9 +29,10 @@
 }
 
 .search-container {
+    width: 100%;
     padding: 20px;
     display: flex;
-    justify-content: center;
-    align-items: center;
-
+    justify-content: center; /* Wyśrodkowanie w poziomie */
+    align-items: flex-start; /* Wyrównanie do góry w pionie */
 }
+

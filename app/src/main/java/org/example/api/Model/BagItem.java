@@ -1,5 +1,7 @@
 package org.example.api.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -12,13 +14,12 @@ public class BagItem {
 
     @ManyToOne
     @JoinColumn(name = "bag_id", nullable = false)
+    @JsonBackReference // Ignoruj przetwarzanie relacji zwrotnych do "Bag"
     private Bag bag;
 
     @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)
     private Item item;
-
-    // Getters and setters
 
     public int getId() {
         return id;
@@ -44,4 +45,5 @@ public class BagItem {
         this.item = item;
     }
 }
+
 

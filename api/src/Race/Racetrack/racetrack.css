@@ -1,0 +1,27 @@
+.racetrack-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.racetrack-images {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.car-card {
+    text-align: center;
+}
+
+.car-image {
+    width: 200px;
+    height: auto;
+}
+
+.racetrack-result {
+    margin-top: 30px;
+    font-size: 20px;
+    font-weight: bold;
+}

@@ -33,5 +33,16 @@ public class OrderController {
     public List<OrderSummaryDTO> getOrderSummaries() {
         return orderRepository.findAllOrderSummaries();
     }
+    @PostMapping("/create-market-listing")
+    public Orders createMarketListing(
+            @RequestBody OrderRequest orderRequest,
+            @RequestParam int itemId,          // ID przedmiotu - przekazywane w query param
+            @RequestParam int quantity,        // Ilość
+            @RequestParam double unitPrice     // Cena jednostkowa
+    ) {
+        // Tworzenie ogłoszenia
+        return orderService.createMarketListing(orderRequest, itemId, quantity, unitPrice);
+    }
+
 }
 

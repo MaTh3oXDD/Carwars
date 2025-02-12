@@ -1,39 +1,29 @@
 package org.example.api.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.util.List;
 
 @Entity
-@Table(name = "bags") // Tabela nazywa się "bags"
+@Table(name = "bags") // Tabela
 public class Bag {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Automatyczne generowanie klucza głównego
-    private int id; // Klucz główny (Primary Key)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-    @Column(nullable = false) // Każda torba musi mieć określoną pojemność
     private int capacity;
 
-    // Relacja ManyToOne z User - każda torba należy do jednego użytkownika
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false) // Klucz obcy w tabeli "bags"
-    @JsonBackReference // Rozwiązuje cykliczne odniesienia w JSON-ie (dotyczy JPA + Jackson)
-    private User user;
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
+    private User user; // Usuń tu @JsonBackReference oraz @JsonIgnore (referencję można obsłużyć w `User`)
 
-    // Opcjonalny przykład relacji z BagItem
     @OneToMany(mappedBy = "bag", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference // Serializujemy listę "BagItem"
     private List<BagItem> bagItems;
-
-    // Konstruktor domyślny (wymagany przez Hibernate)
-    public Bag() {
-    }
-
-    // Konstruktor z parametrami
-    public Bag(int capacity, User user) {
-        this.capacity = capacity;
-        this.user = user;
-    }
 
     // Gettery i settery
     public int getId() {
@@ -66,14 +56,5 @@ public class Bag {
 
     public void setBagItems(List<BagItem> bagItems) {
         this.bagItems = bagItems;
-    }
-
-    @Override
-    public String toString() {
-        return "Bag{" +
-                "id=" + id +
-                ", capacity=" + capacity +
-                ", user=" + (user != null ? user.getUsername() : null) +
-                '}';
     }
 }

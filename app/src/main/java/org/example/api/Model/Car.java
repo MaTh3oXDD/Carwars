@@ -1,12 +1,13 @@
 package org.example.api.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+
 import java.util.List;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-@Table(name = "car")
 public class Car {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -14,14 +15,16 @@ public class Car {
     @Column(name = "car_name", length = 50, nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference(value = "car-ownership")
-    private List<OwnershipOfCar> ownershipOfCars;
+    @Column(name = "speed", length = 50, nullable = false)
+    private int speed;
 
-    // Gettery i setter
+    // Relacja z User jako ManyToMany
+    @ManyToMany(mappedBy = "cars") // Druga strona relacji
+    @JsonBackReference // Referencja cykliczna (ignorowana przy serializacji)
+    private List<User> users; // Lista użytkowników, którzy posiadają ten samochód
 
-
-public int getId() {
+    // Gettery i settery
+    public int getId() {
         return id;
     }
 
@@ -37,11 +40,19 @@ public int getId() {
         this.name = name;
     }
 
-    public List<OwnershipOfCar> getOwnershipOfCars() {
-        return ownershipOfCars;
+    public int getSpeed() {
+        return speed;
     }
 
-    public void setOwnershipOfCars(List<OwnershipOfCar> ownershipOfCars) {
-        this.ownershipOfCars = ownershipOfCars;
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 }

@@ -25,5 +25,16 @@ public class CarService {
         Optional<Car> car = carRepository.findById(id);
         return car.map(Car::getName).orElse(null);
     }
+    public List<Car> addMultipleCars(List<Car> cars) {
+        return carRepository.saveAll(cars);
+    }
+    public Car getRandomCar() {
+        List<Car> cars = findAllCars();
+        if(cars.isEmpty()) {
+            throw new IllegalStateException("No cars found");
+        }
+        int randomIndex = (int) (Math.random() * cars.size());
+        return cars.get(randomIndex);
+    }
 
 }

@@ -2,6 +2,7 @@ package org.example.api.Model;
 
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import java.util.List;
 
 @Entity
@@ -9,10 +10,10 @@ import java.util.List;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Automatyczne generowanie klucza głównego
-    private int id; // Klucz główny (Primary Key)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-    @Column(nullable = false, unique = true) // E-mail musi być unikalny i nie null
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -26,24 +27,28 @@ public class User {
 
     @Column
     private Integer money;
+
     @Column(name = "selected_car_id")
     private int selectedCarId;
 
-    // Relacja OneToMany z klasą Bag - użytkownik może mieć wiele "Bag"
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference // Rozwiązuje problem cyklicznych referencji w JSON-ie (dotyczy JPA + Jackson)
+    @JsonManagedReference // Obsługujemy zarządzaną stronę relacji User -> Bag
     private Bag bags;
 
-    // Konstruktor domyślny (wymagany przez Hibernate)
-    public User() {
+    // Relacja ManyToMany z Car
+    @ManyToMany
+    @JoinTable(
+            name = "user_car", // Tabela pośrednia
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "car_id")
+    )
+    private List<Car> cars; // Lista samochodów powiązanych z użytkownikiem
+
+    public int getSelectedCarId() {
+        return selectedCarId;
     }
 
-    // Konstruktor z parametrami
-    public User(String email, String password, String username, Boolean gender, int selectedCarId) {
-        this.email = email;
-        this.password = password;
-        this.username = username;
-        this.gender = gender;
+    public void setSelectedCarId(int selectedCarId) {
         this.selectedCarId = selectedCarId;
     }
 
@@ -88,18 +93,6 @@ public class User {
         this.gender = gender;
     }
 
-    public int getSelectedCarId() {
-        return selectedCarId;
-    }
-
-    public void setSelectedCarId(int selectedCarId) {
-        this.selectedCarId = selectedCarId;
-    }
-
-    public Bag getBags() {
-        return bags;
-    }
-
     public Integer getMoney() {
         return money;
     }
@@ -108,16 +101,19 @@ public class User {
         this.money = money;
     }
 
+    public Bag getBags() {
+        return bags;
+    }
+
     public void setBags(Bag bags) {
         this.bags = bags;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", username='" + username + '\'' +
-                '}';
+    public List<Car> getCars() {
+        return cars;
+    }
+
+    public void setCars(List<Car> cars) {
+        this.cars = cars;
     }
 }

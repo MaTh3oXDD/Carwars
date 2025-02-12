@@ -36,5 +36,16 @@ public class CarController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Car not found");
         }
     }
+    @PostMapping("/add-multiple")
+    public ResponseEntity<List<Car>> addMultipleCars(@RequestBody List<Car> cars) {
+        List<Car> newCars = carService.addMultipleCars(cars);
+        return ResponseEntity.ok(newCars);
+    }
+    @GetMapping("/random")
+    public ResponseEntity<Car> getRandomCar() {
+        Car randomCar = carService.getRandomCar();
+        return ResponseEntity.ok(randomCar);
+    }
+
 
 }

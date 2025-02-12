@@ -1,5 +1,6 @@
 package org.example.api.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -14,6 +15,7 @@ public class Item {
     private int weight;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @JsonIgnore // Ignoruje cykliczne odniesienia do `BagItem`
     private List<BagItem> bagItems;
 
     public Item(int id, String name, int weight) {
@@ -25,7 +27,7 @@ public class Item {
     public Item() {
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

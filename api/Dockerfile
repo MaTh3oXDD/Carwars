@@ -1,19 +1,23 @@
-FROM node:20-alpine
+# Użycie oficjalnego obrazu Node.js w lekkiej wersji Alpine
+FROM node:20-alpine AS base
 
-# Set the working directory in the container
+# Ustawienie katalogu roboczego w kontenerze
 WORKDIR /app
 
-# Copy only package.json and package-lock.json
+# Skopiowanie zależności (package.json i package-lock.json)
 COPY package.json package-lock.json ./
 
-# Run npm install to install dependencies
+# Instalacja zależności
 RUN npm install
 
-# Copy all other files into the container
+# Skopiowanie pozostałych plików do kontenera
 COPY . .
 
-# Expose port 3000
+# Eksponowanie portu aplikacji React
 EXPOSE 3000
 
-# Change the CMD to use host mode for Vite
-CMD ["npm", "run", "dev", "--", "--host=0.0.0.0", "--port=3000"]
+# Zmienna środowiskowa dla poprawnego działania Hot Reloading
+ENV CHOKIDAR_USEPOLLING=true
+
+# Uruchomienie serwera deweloperskiego Vite
+CMD ["npm", "run", "dev"]

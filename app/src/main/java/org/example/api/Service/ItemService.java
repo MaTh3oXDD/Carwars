@@ -22,7 +22,7 @@ public class ItemService {
     public List<Item> findItemSummaries() {
         return itemRepository.findAll()
                 .stream()
-                .map(item -> new Item(item.getId(), item.getName(), item.getWeight()))
+                .map(item -> new Item((int) item.getId(), item.getName(), item.getWeight()))
                 .collect(Collectors.toList());
     }
 }

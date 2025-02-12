@@ -1,14 +1,40 @@
 import React, { useState, useEffect } from "react";
-import "./market.css";
+import {
+    Select,
+    SelectTrigger,
+    SelectValue,
+    SelectContent,
+    SelectItem,
+} from "@/components/ui/select"; // Radix Select + ShadCN wrapper
+import {
+    Table,
+    TableHeader,
+    TableRow,
+    TableHead,
+    TableBody,
+    TableCell,
+} from "@/components/ui/table"; // ShadCN UI Table
+import { Input } from "@/components/ui/input"; // ShadCN UI Input
+import { Button } from "@/components/ui/button"; // ShadCN UI Button
+import { Card } from "@/components/ui/card"; // ShadCN UI Card for layout
 
 const Market = () => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [sortBy, setSortBy] = useState('');
-    const [orders, setOrders] = useState([]);
-    const [filteredOrders, setFilteredOrders] = useState([]);
-    const [message, setMessage] = useState('');
-    const username = localStorage.getItem('username');
+    const [searchTerm, setSearchTerm] = useState(""); // Search term
+    const [sortBy, setSortBy] = useState("none"); // Selected sort option
+    const [orders, setOrders] = useState([]); // Original orders
+    const [filteredOrders, setFilteredOrders] = useState([]); // Filtered and sorted orders
+    const [message, setMessage] = useState(""); // Feedback message to the user
+    const username = localStorage.getItem("username"); // Get username from localStorage
 
+    // Sort options
+    const sortOptions = [
+        { value: "none", label: "None" },
+        { value: "price-asc", label: "Price: Low to High" },
+        { value: "price-desc", label: "Price: High to Low" },
+        { value: "name", label: "Name" },
+    ];
+
+    // Fetch orders from backend
     const fetchData = async () => {
         try {
             const response = await fetch("http://localhost:8080/orders/summaries");
@@ -20,46 +46,49 @@ const Market = () => {
         }
     };
 
+    // Fetch data when the component mounts
     useEffect(() => {
         fetchData();
     }, []);
 
+    // Update filtered orders when search term, sort option, or orders change
     useEffect(() => {
         let updatedOrders = [...orders];
 
-        if (searchTerm.trim() !== '') {
-            updatedOrders = updatedOrders.filter(order =>
+        // Filter by search term
+        if (searchTerm.trim() !== "") {
+            updatedOrders = updatedOrders.filter((order) =>
                 order.itemName.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
 
-        if (sortBy === 'price-asc') {
+        // Apply sorting
+        if (sortBy === "price-asc") {
             updatedOrders.sort((a, b) => a.unitPrice - b.unitPrice);
-        } else if (sortBy === 'price-desc') {
+        } else if (sortBy === "price-desc") {
             updatedOrders.sort((a, b) => b.unitPrice - a.unitPrice);
-        } else if (sortBy === 'name') {
+        } else if (sortBy === "name") {
             updatedOrders.sort((a, b) => a.itemName.localeCompare(b.itemName));
         }
 
         setFilteredOrders(updatedOrders);
     }, [searchTerm, sortBy, orders]);
 
+    // Handle purchase action
     const handlePurchase = async (order) => {
         if (!username) {
             setMessage("User not logged in");
-            setTimeout(() => setMessage(''), 5000);
+            setTimeout(() => setMessage(""), 5000);
             return;
         }
-        console.log("Username to send:" + username);
-        console.log("itemId to send:" + order.itemId);
+
         try {
             const requestBody = JSON.stringify({
-                username: username,
+                username,
                 itemId: order.itemId,
                 quantity: order.quantity,
                 unitPrice: order.unitPrice,
             });
-            console.log("Request body:", requestBody); // Logowanie request body
 
             const response = await fetch("http://localhost:8080/market/buy", {
                 method: "POST",
@@ -69,90 +98,103 @@ const Market = () => {
                 body: requestBody,
             });
 
-            console.log("Response status:", response.status);
             if (response.ok) {
-                try {
-                    const responseData = await response.json();
-                    setMessage("Purchase successful!");
-                    console.log("Response data:", responseData);
-                    fetchData();
-                } catch(jsonError){
-                    console.error("Error parsing json after success:", jsonError)
-                    setMessage("Purchase successful but failed to read response");
-                }
+                setMessage("Purchase successful!");
+                fetchData();
             } else {
-                try {
-                    const errorData = await response.json();
-                    setMessage(`Purchase failed: ${errorData.error || "Unknown error"}`);
-                    console.error("Purchase failed:", errorData); // Zalogowanie błędu z serwera
-                } catch(jsonError) {
-                    console.error("Error parsing json after failure:", jsonError);
-                    setMessage(`Purchase failed: Unable to parse error response.`);
-                }
-
+                const errorData = await response.json();
+                setMessage(`Purchase failed: ${errorData.error || "Unknown error"}`);
             }
         } catch (error) {
             console.error("Error during purchase:", error);
             setMessage("Purchase failed: Unable to connect to the server.");
         }
-        setTimeout(() => setMessage(''), 5000);
+        setTimeout(() => setMessage(""), 5000);
     };
 
-
     return (
-        <div className="search-container">
-            <div className="search-controls">
-                <input
-                    type="text"
+        <Card className="p-8 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
+            {/* Controls Section: Search and Sort */}
+            <div className="mb-5 flex flex-col md:flex-row items-center justify-between gap-4">
+                {/* Search Input */}
+                <Input
                     placeholder="Search by item name"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="search-input"
+                    className="w-full md:w-1/2"
                 />
-                <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="sort-select"
-                >
-                    <option value="">Sort by</option>
-                    <option value="price-asc">Price: Low to High</option>
-                    <option value="price-desc">Price: High to Low</option>
-                    <option value="name">Name</option>
-                </select>
+
+                {/* Sort Dropdown */}
+                <Select onValueChange={(value) => setSortBy(value)} className="w-full md:w-1/3">
+                    <SelectTrigger>
+                        <SelectValue placeholder="Sort by" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {sortOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
             </div>
-            {message && <div className="status-message">{message}</div>}
-            <div className="results-table">
-                <div className="table-header">
-                    <div className="header-cell">Order ID</div>
-                    <div className="header-cell">Item Name</div>
-                    <div className="header-cell">Quantity</div>
-                    <div className="header-cell">Unit Price</div>
-                    <div className="header-cell">Actions</div>
+
+            {/* Feedback Message */}
+            {message && (
+                <div className="mb-4 p-3 rounded-md bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200">
+                    {message}
                 </div>
-                <div className="table-body">
-                    {filteredOrders.length > 0 ? (
-                        filteredOrders.map((order, index) => (
-                            <div key={index} className="table-row">
-                                <div className="table-cell">{order.orderId}</div>
-                                <div className="table-cell">{order.itemName}</div>
-                                <div className="table-cell">{order.quantity}</div>
-                                <div className="table-cell">${order.unitPrice.toFixed(2)}</div>
-                                <div className="table-cell">
-                                    <button
-                                        className="buy-button"
-                                        onClick={() => handlePurchase(order)}
-                                    >
-                                        Buy
-                                    </button>
-                                </div>
-                            </div>
-                        ))
-                    ) : (
-                        <div className="no-results">No orders found</div>
-                    )}
-                </div>
+            )}
+
+            {/* Orders Table */}
+            <div className="overflow-x-auto">
+                <Table className="w-full text-sm">
+                    <TableHeader className="bg-gray-200 dark:bg-gray-700">
+                        <TableRow>
+                            <TableHead className="p-4 text-left">Order ID</TableHead>
+                            <TableHead className="p-4 text-left">Item Name</TableHead>
+                            <TableHead className="p-4 text-left">Quantity</TableHead>
+                            <TableHead className="p-4 text-left">Unit Price</TableHead>
+                            <TableHead className="p-4 text-left">Actions</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {filteredOrders.length > 0 ? (
+                            filteredOrders.map((order, index) => (
+                                <TableRow
+                                    key={order.orderId}
+                                    className={
+                                        index % 2 === 0
+                                            ? "bg-gray-100 dark:bg-gray-700"
+                                            : "bg-white dark:bg-gray-800"
+                                    }
+                                >
+                                    <TableCell className="p-4">{order.orderId}</TableCell>
+                                    <TableCell className="p-4">{order.itemName}</TableCell>
+                                    <TableCell className="p-4">{order.quantity}</TableCell>
+                                    <TableCell className="p-4">${order.unitPrice.toFixed(2)}</TableCell>
+                                    <TableCell className="p-4">
+                                        <Button
+                                            variant="primary"
+                                            size="sm"
+                                            onClick={() => handlePurchase(order)}
+                                        >
+                                            Buy
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan="5" className="p-4 text-center">
+                                    No orders found
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
             </div>
-        </div>
+        </Card>
     );
 };
 
